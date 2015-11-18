@@ -28,26 +28,32 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>
-<a id="background" class="anchor" href="#background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background:</h3>
+        <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/HardCodeArt.jpg?raw=true" alt="Image of program"></p>
 
-<p>Sound is able to convey emotions that are more then just cultural. For music it seems most reasonable that this has everything to do with the frequencies that make it up. Using the Fourier Transform it is possible to more any functioninto the frequencies domain. This includes images.</p>
+<p><em>HardCodeArt</em></p>
 
 <h3>
-<a id="theory" class="anchor" href="#theory" aria-hidden="true"><span class="octicon octicon-link"></span></a>Theory:</h3>
+<a id="background-and-theory" class="anchor" href="#background-and-theory" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background and Theory:</h3>
 
-<p>Art is able to convey certain emotions and thoughts without evoking cultural memes. This has something to do with the frequencies and beat frequencies that make up the art.</p>
+<p>Sound is able to convey emotions that are more then just cultural. For music it seems most reasonable that this has everything to do with the frequencies that make it up. Using the Fourier Transform it is possible to map any function, including images, into the frequencies domain. My theory that the frequencies that make up images are responsible for the emotions that are conveyed by the image.</p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT.jpg?raw=true" alt="FFT of image"></p>
+
+<p><em>FFT of image</em></p>
 
 <h3>
 <a id="model" class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model:</h3>
 
-<p>To test my theory I created a neural network which I will train it to recognize adjectives people associate with art. The images will be transformed to the frequencies domain using PyBrain's Fast Fourier Transform. This will be used as the inputs to the Neural Network. The outputs will be a set of adjectives. I narrowed down the emotions to: Sad, Happy, Serious, Whimsical, Peaceful, Intense, Angry, and Simple. Only images without recognizable objects it will be used to insure that the emotions are caused by the colors and patterns not the objects.  </p>
+<p>To test my theory I created a neural network using PyBrain's implementation, which I will train to recognize the adjectives people associate with art. The images will be transformed to the frequencies domain using Numpy's Fast Fourier Transform. This will be used as the inputs to the Neural Network. The outputs will be a set of adjectives. I narrowed down the adjectives to Sad, Happy, Serious, Whimsical, Peaceful, Intense, Angry, and Simple. Only images without recognizable objects in it will be used to insure that the emotions are caused by the colors and patterns not the objects.  </p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT2.jpg?raw=true" alt="Second FFT of image"></p>
+
+<p><em>FFT of a seccond image</em></p>
 
 <h3>
-<a id="why-should-you-care" class="anchor" href="#why-should-you-care" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Should You care:</h3>
+<a id="why-should-you-care" class="anchor" href="#why-should-you-care" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Should You Care:</h3>
 
-<p>If the theory is right then it could be used to better understand how we interact with our environment.
-Surly Artiest and Advertisers already are taping into this (Intentionally and unintentionally). If we were able to have a formal understanding of how this works, producers of images would be better able to utilize the subconscious connections we make. Consumers could be made more aware of how they are emotionally effected by Art. </p>
+<p>If the theory is right then it could be used to better understand how we interact with art. This could give insight into how we understand the world.</p>
       </section>
     </div>
 
