@@ -56,15 +56,33 @@
 <p>If the theory is right then it could be used to better understand how we interact with art. This could give insight into how we understand the world.</p>
 
 <h3>
-<a id="data-collection" class="anchor" href="#data-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Collection</h3>
+<a id="data-collection" class="anchor" href="#data-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Collection:</h3>
+
+<p>I am using a moving window approach to data collection. For each image I randomly choose part of the image. Either the whole image(blue), 1/4th of the image(red), or 1/16th of the image(red) is used. The part of the image used is randomized for each training epoch. </p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/HardCodeArtWindow.jpg?raw=true" alt="Image of program with windows"></p>
+
+<p><em>Data Collection Windows</em></p>
 
 <h3>
-<a id="data-compression" class="anchor" href="#data-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Compression</h3>
+<a id="data-compression" class="anchor" href="#data-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Compression:</h3>
 
-<p>One of the major issues is that the amount of data in an image is huge. The Fourier Transform does not change the amount of data. Though if one takes the absolute value of the Fourier Transform of an image it exhibits rotational symmetry.
-<img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3.png?raw=true" alt="FFT of image with rotational symmetry">
-I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within thous windows. Each Color is considered by itself so in all this leads to 24 inputs.
-<img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3edit.png?raw=true" alt="FFT of image with eight key windows">  </p>
+<p>One of the major issues is that the amount of data in an image is huge. The Fourier Transform does not change the amount of data. Though if one takes the absolute value of the Fourier Transform of an image it exhibits rotational symmetry.</p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3.png?raw=true" alt="FFT of image with rotational symmetry"></p>
+
+<p><em>FFT of image with rotational symmetry</em></p>
+
+<p>I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within thous windows. Each Color is considered by itself so in all this leads to 24 inputs.</p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3edit.png?raw=true" alt="FFT of image with eight key windows">  </p>
+
+<p><em>FFT of image with eight key windows</em></p>
+
+<h3>
+<a id="using-software" class="anchor" href="#using-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using software:</h3>
+
+<p>After downloading code you must add the images you would like to use to a file named "images" in the project folder. I did not include the images I used because I do not own rights to them.</p>
       </section>
     </div>
 
