@@ -1,8 +1,6 @@
 from Tkinter import *
 from tkFileDialog import *
-from PIL import Image, ImageTk, ImageEnhance
-import os
-import sys
+from PIL import Image, ImageTk
 import tkSimpleDialog
 from random import *
 from os import listdir
@@ -23,17 +21,17 @@ class ImageViewer:
         self.files = filelist
         self.training = traininglist
         self.fileindex={f: i for i, f in enumerate(filelist)}
+        self.filefft={}
         self.save = ""
         self.imsidelen=400
         self.datasidelen=100
-        self.datainput=self.datasidelen*self.datasidelen*3
-        self.advr=1.0/(self.imsidelen*self.imsidelen*3)
+        self.datainput=24
         self.index = 0
         self.AILook=5
         #self.loadnet()
         self.Emotions = [0] * len(self.files)
         self.menubar = Menu(master)
-        self.showfft=True
+        self.showfft=False
 
         menu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=menu)
@@ -250,7 +248,8 @@ class ImageViewer:
 
     def img_toarray(self, im):
         imdata = im.load()
-        return [[[imdata[i,j][k] for i in range(self.imsidelen)] for j in range(self.imsidelen)]for k in range(3)]
+        width, height = im.size
+        return [[[imdata[i,j][k] for i in range(width)] for j in range(height)]for k in range(3)]
 
 
     def img_fft(self, im):
@@ -271,12 +270,14 @@ class ImageViewer:
 
     def fftimage(self,im):
         imfft = self.img_fft(im)
+        width, height = im.size
+        advr=1.0/(width*height*3)
         adv=0
         advsq=0
-        for j in range(50,self.imsidelen):
-            for i in range(50,self.imsidelen):
+        for j in range(width):
+            for i in range(height):
                 for k in range(3):
-                    s=imfft[k][i][j]*self.advr
+                    s=imfft[k][i][j]*advr
                     adv+=s
                     advsq+= imfft[k][i][j]*s
 
@@ -286,8 +287,8 @@ class ImageViewer:
         low=adv-delta
         ratio= 255/(2*delta)
 
-        for j in range(self.imsidelen):
-            for i in range(self.imsidelen):
+        for j in range(width):
+            for i in range(height):
                 for k in range(3):
                     imfft[k][i][j]=(imfft[k][i][j]-low)*ratio
                     if imfft[k][i][j] > 255:
@@ -296,32 +297,38 @@ class ImageViewer:
                         imfft[k][i][j] = 0
 
 
-        data = zeros((self.imsidelen,self.imsidelen,3), dtype=uint8)
-        for j in range(self.imsidelen):
-            for i in range(self.imsidelen):
+        data = zeros((width,height,3), dtype=uint8)
+        for j in range(width):
+            for i in range(height):
                 for k in range(3):
                     data[i, j][k]=imfft[k][i][j]
         img = Image.fromarray(data, 'RGB')
         return img
 
-    def d3tod1(self,ary):
-        return[ary[k][i][j] for k in range(3) for j in range(self.datasidelen) for i in range(self.datasidelen)]
-
     def fftfile(self, filename):
-        im = self.format_image(Image.open(filename))
-        s = self.datasidelen*choice((1,2,4))
-        imsmall=im.resize((s,s))
-        i = randrange(s-self.datasidelen+1)
-        j = randrange(s-self.datasidelen+1)
-        imsmall=imsmall.crop((i,j,i+self.datasidelen,j+self.datasidelen))
-        return self.d3tod1(self.img_fft(imsmall))#willbreaknow
+        if(not self.filefft.has_key(filename)):
+            im = self.format_image(Image.open(filename))
+            s = self.datasidelen*choice((1,2,4))
+            #s = self.datasidelen
+            imsmall=im.resize((s,s))
+            i = randrange(s-self.datasidelen+1)
+            j = randrange(s-self.datasidelen+1)
+            imsmall=imsmall.crop((i,j,i+self.datasidelen,j+self.datasidelen))
+            self.filefft[filename]= self.keyData(self.img_fft(imsmall))
+        return self.filefft[filename];
 
-    def getfftmap(self):
-        fftmap=[]
-        for index in range(len(self.files)):
-            filename = self.files[index]
-            fftmap.append(self.fftfile(filename))
-        return fftmap
+
+    def keyData(self,fft):
+        ret=[0.0]*self.datainput
+        index =0
+        for ii in range(2):
+            for jj in range(4):
+                for k in range(3):
+                    for j in range(25):
+                        for i in range(25):
+                            ret[index]+=fft[k][i+ii*25][j+jj*25]/(25*25)
+                    index += 1
+        return ret
 
     def tobit(self, num):
         bit=[0]*8
@@ -334,7 +341,7 @@ class ImageViewer:
         j=-1
         m=0
         for i in range(0, len(bit)):
-            if bit[i] >= .5:
+            if bit[i] >= .33:
                 num+=1 << i
             if bit[i] > m:
                 m=bit[i]
@@ -351,26 +358,23 @@ class ImageViewer:
 
     def gettraining(self):
         DS = SupervisedDataSet(self.datainput, 8)
-        fftmap = self.getfftmap()
-        trn = random.choice(self.training)
-        self.Emotions = [0] * len(self.files)
-        print trn
-        inf = open(trn,'r')
-        for line in inf:
-            val = line.split(' ', 2)
-            index = self.fileindex[val[0]]
-            if index>=10:
-                input=fftmap[index]
-                output=self.tobit(int(val[1]))
-                DS.appendLinked(input, output)
+        for trn in self.training:
+            inf = open(trn,'r')
+            for line in inf:
+                val = line.split(' ', 2)
+                index = self.fileindex[val[0]]
+                if index>=10:
+                    input=self.fftfile(val[0])
+                    output=self.tobit(int(val[1]))
+                    DS.appendLinked(input, output)
         return DS
 
     def train(self):
         self.loadnet()
         while True:
+            self.filefft={}
             ds=self.gettraining()
             trainer = BackpropTrainer(self.net,ds)
-
             print trainer.train()
             self.savenet()
 
