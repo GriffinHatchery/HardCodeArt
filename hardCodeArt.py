@@ -3,6 +3,7 @@ from tkFileDialog import *
 from PIL import Image, ImageTk
 import tkSimpleDialog
 from random import *
+import os
 from os import listdir
 from os.path import isfile, join
 import datetime
