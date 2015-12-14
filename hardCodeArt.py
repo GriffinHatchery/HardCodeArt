@@ -26,13 +26,14 @@ class ImageViewer:
         self.save = ""
         self.imsidelen=400
         self.datasidelen=100
-        self.datainput=24
+        self.datainput=48
+        self.windowsize=25
+        self.windowarea=self.windowsize*self.windowsize
         self.index = 0
         self.AILook=5
         #self.loadnet()
         self.Emotions = [0] * len(self.files)
         self.menubar = Menu(master)
-        self.showfft=False
 
         menu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=menu)
@@ -43,7 +44,7 @@ class ImageViewer:
         menu.add_command(label="Add img", command=lambda : self.addimg())
         menu.add_command(label="Train", command=lambda : self.train())
         menu.add_command(label="AI", command=lambda : self.AIread())
-        menu.add_command(label="FFT", command=lambda : self.togglefft())
+        menu.add_command(label="Analyze", command=lambda : self.Analyze())
 
 
         master.config(menu=self.menubar)
@@ -53,11 +54,19 @@ class ImageViewer:
         self.title = Label(text=os.path.basename(filename))
         self.title.pack()
 
+        # the image frame
+        imfr = Frame(master)
+        imfr.pack(side='top', expand=1, fill='x')
+
         im = self.format_image(Image.open(filename))
         self.tkimage = ImageTk.PhotoImage(im)
 
-        self.lbl = Label(master, image=self.tkimage)
-        self.lbl.pack(side='top')
+        self.lbl = Label(imfr, image=self.tkimage)
+        self.lbl.pack(side='left')
+        self.tkfftimage = ImageTk.PhotoImage(self.fftimage(im))
+
+        self.fftlbl = Label(imfr, image= self.tkfftimage);
+        self.fftlbl.pack(side='right')
 
         # the navigation frame
         frnav = Frame(master)
@@ -145,10 +154,8 @@ class ImageViewer:
         self.evar.set(self.index+1)
 
         im = self.format_image(Image.open(filename))
-        if not self.showfft:
-            self.tkimage.paste(im)
-        else:
-            self.tkimage.paste(self.fftimage(im))
+        self.tkimage.paste(im)
+        self.tkfftimage.paste(self.fftimage(im))
         self.setselect()
 
     def setselect(self):
@@ -265,16 +272,12 @@ class ImageViewer:
         b = abs(ifft2(b))
         return Image.fromarray(b.astype(uint8))
 
-    def togglefft(self):
-        self.showfft= not  self.showfft
-        self.toframe(self.index)
-
     def fftimage(self,im):
         imfft = self.img_fft(im)
         width, height = im.size
         advr=1.0/(width*height*3)
-        adv=0
-        advsq=0
+        adv=0.0
+        advsq=0.0
         for j in range(width):
             for i in range(height):
                 for k in range(3):
@@ -325,10 +328,26 @@ class ImageViewer:
         for ii in range(2):
             for jj in range(4):
                 for k in range(3):
-                    for j in range(25):
-                        for i in range(25):
-                            ret[index]+=fft[k][i+ii*25][j+jj*25]/(25*25)
-                    index += 1
+                    for j in range(self.windowsize):
+                        for i in range(self.windowsize):
+                            d=fft[k][i+ii*self.windowsize][j+jj*self.windowsize];
+                            #average
+                            ret[index]+=d/(self.windowarea)
+                            #average square
+                            ret[index+1]+=d*d/(self.windowarea)
+
+                    index += 2
+
+
+        index =0
+        for ii in range(2):
+            for jj in range(4):
+                for k in range(3):
+                    #standard deviations
+                    ret[index+1]=sqrt(abs(ret[index+1]-ret[index]*ret[index]))
+                    index += 2
+
+
         return ret
 
     def tobit(self, num):
@@ -342,7 +361,7 @@ class ImageViewer:
         j=-1
         m=0
         for i in range(0, len(bit)):
-            if bit[i] >= .33:
+            if bit[i] >= .5:
                 num+=1 << i
             if bit[i] > m:
                 m=bit[i]
@@ -368,6 +387,7 @@ class ImageViewer:
                     input=self.fftfile(val[0])
                     output=self.tobit(int(val[1]))
                     DS.appendLinked(input, output)
+            inf.close()
         return DS
 
     def train(self):
@@ -380,17 +400,85 @@ class ImageViewer:
             self.savenet()
 
     def AIread(self):
+        bit = self.AIgetBits(self.index)
+        print bit
+        self.Emotions[self.index]=self.tonum(bit)
+        self.setselect()
+
+    def AIgetBits(self,index):
         self.loadnet()
-        file=self.files[self.index]
+        file=self.files[index]
         bit=[0]*8
 
         for i in range(self.AILook):
             fft=self.fftfile(file)
             bit=add(bit,self.net.activate(fft))
-        bit = divide(bit,self.AILook)
-        print bit
-        self.Emotions[self.index]=self.tonum(bit)
-        self.setselect()
+        return divide(bit,self.AILook)
+
+    def Analyze(self):
+        sd=[0.0] * len(self.files)
+        mean=[0.0] * len(self.files)
+        num=[0] * len(self.files)
+
+        aisd=[0.0] * len(self.files)
+        aimean=[0.0] * len(self.files)
+        ainum=[0] * len(self.files)
+
+        emotions = [[0 for i in range(len(self.files))] for i in range(len(self.training))]
+        aiemotions=[0] * len(self.files)
+        for tri in range(len(self.training)):
+            trn=self.training[tri]
+            inf = open(trn,'r')
+            for line in inf:
+                val = line.split(' ', 2)
+                index = self.fileindex[val[0]]
+                emotions[tri][index]=int(val[1])
+            inf.close()
+
+        for fi in range(len(self.files)):
+            eai= self.tonum(self.AIgetBits(fi));
+            aiemotions[fi]=eai
+            for tri in range(len(self.training)):
+                ei=emotions[tri][fi]
+                if(ei == 0):
+                    continue
+
+                for trj in range(tri):
+                    ej=emotions[trj][fi]
+                    if(ej == 0):
+                        continue
+                        
+                    num[fi]+=1
+                    c = self.count(ei ^ ej)
+                    mean[fi]+=c
+                    sd[fi]+=c*c
+
+
+                ainum[fi]+=1
+                aic = self.count(ei ^ eai)
+                aimean[fi]+=aic
+                aisd[fi]+=aic*aic
+
+        for fi in range(len(self.files)):
+            mean[fi]/=num[fi]
+            sd[fi]=sqrt(abs(sd[fi]/num[fi]-mean[fi]*mean[fi]))
+
+            aimean[fi]/=ainum[fi]
+            aisd[fi]=sqrt(abs(aisd[fi]/ainum[fi]-aimean[fi]*aimean[fi]))
+
+        out = open("analyze.txt",'w')
+
+        out.write("file\tmean\tsd\tAi's Mean\tAi's sd\n")
+        for fi in range(len(self.files)):
+            out.write(self.files[fi] + "\t" + str(mean[fi]) + "\t" + str(sd[fi]) + "\t" + str(aimean[fi]) + "\t" + str(aisd[fi]) + "\n")
+        out.close()
+
+
+    def count(self,num):
+        ans = 0
+        for i in range(8):
+            ans += (num >> i & 1)
+        return ans
 
 
 class NameDialog(tkSimpleDialog.Dialog):
