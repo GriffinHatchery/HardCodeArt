@@ -74,6 +74,8 @@
 
 <p><em>Disagreement Between Humans</em></p>
 
+<p>It is important to notice the large standard deviation this is because humans are very subjective and often do not agree with art. The most we can hope to achieve is an AI that is able to consistently chose emotions that when compared with the humans results in points within the error bars.      </p>
+
 <h3>
 <a id="data-compression" class="anchor" href="#data-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Compression:</h3>
 
@@ -89,11 +91,13 @@
 
 <p><em>FFT of image with rotational symmetry</em></p>
 
-<p>I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within thous windows. Each Color is considered by itself. I also considered the standard deviations with in each of these windows. In all this leads to 48 inputs.</p>
+<p>I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within these windows. Each Color is considered by itself. I also considered the standard deviations within each of these windows. In all this leads to 48 inputs.</p>
 
 <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3edit.png?raw=true" alt="FFT of image with eight key windows">  </p>
 
 <p><em>FFT of image with eight key windows</em></p>
+
+<p>There is a inner layer with 16 levels and the output layer has the 8 emotions. </p>
 
 <h3>
 <a id="results" class="anchor" href="#results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Results:</h3>
@@ -104,11 +108,15 @@
 
 <p><em>Random</em></p>
 
-<p>Two important numbers to note: is the number of points outside the standard deviation and the number of points above the human mean. 88% of the points where above above the human mean, and 52% of the points were outside the standard deviation.</p>
+<p>Two important numbers to notice are the number of points outside the standard deviation and the number of points above the human mean. 88% of the points where above above the human mean, and 52% of the points were outside the standard deviation for this untrained AI.</p>
 
 <p>The Next Graph shows the results after the network was trained.</p>
 
-<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/AI.png?raw=true" alt="Disagreement Between Humans and Random"></p>
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/AI.png?raw=true" alt="Disagreement Between Humans and Trained AI"></p>
+
+<p><em>Trained AI</em></p>
+
+<p>This is much better then random. Only 1% of the points are outside the standard deviation and 39% are above the human mean. This means that the computer is making choice similar to those that a human would. From this data set one would not be able to tell if this were done by a human or a computer. That is as good as is possible and I consider this a huge success.  </p>
 
 <h3>
 <a id="using-software" class="anchor" href="#using-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using software:</h3>
