@@ -1,34 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/github-dark.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
 
-    <title>Hard Code Art by suin3g</title>
-  </head>
+  <title>Hard Code Art</title>
+  <meta name="description" content="This is a project that is aimed at using Python and Neural Networks to understand art.  ">
 
-  <body>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
+</head>
+
+<body>
+
+  <div class="wrapper">
     <header>
-      <div class="container">
-        <h1>Hard Code Art</h1>
-        <h2>This is a project that is aimed at using Python and Neural Networks to understand art.  </h2>
-
-        <section id="downloads">
-          <a href="https://github.com/suin3g/HardCodeArt/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/suin3g/HardCodeArt/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/suin3g/HardCodeArt" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
+      <h1 class="title">Hard Code Art</h1>
     </header>
+    <div id="container">
+      <p class="tagline">This is a project that is aimed at using Python and Neural Networks to understand art.  </p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/suin3g/HardCodeArt/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/suin3g/HardCodeArt/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/suin3g/HardCodeArt" class="code">View Hard Code Art on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/Disagreement.png?raw=true" alt="Graph with results"></p>
 
-    <div class="container">
-      <section id="main_content">
-        <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/HardCodeArt.jpg?raw=true" alt="Image of program"></p>
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/HardCodeArt.jpg?raw=true" alt="Image of program"></p>
 
 <p><em>HardCodeArt</em></p>
 
@@ -44,7 +54,7 @@
 <h3>
 <a id="model" class="anchor" href="#model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model:</h3>
 
-<p>To test my theory I created a neural network using PyBrain's implementation, which I will train to recognize the adjectives people associate with art. The images will be transformed to the frequencies domain using Numpy's Fast Fourier Transform. This will be used as the inputs to the Neural Network. The outputs will be a set of adjectives. I narrowed down the adjectives to Sad, Happy, Serious, Whimsical, Peaceful, Intense, Angry, and Simple. Only images without recognizable objects in it will be used to insure that the emotions are caused by the colors and patterns not the objects.  </p>
+<p>To test my theory I created a neural network using PyBrain's implementation, which I will train to recognize the adjectives people associate with art. The images will be transformed to the frequencies domain using Numpy's Fast Fourier Transform. This was used as the inputs to the Neural Network. The outputs are a set of adjectives. I narrowed down the adjectives to Sad, Happy, Serious, Whimsical, Peaceful, Intense, Angry, and Simple. Only images without recognizable objects in it will be used to insure that the emotions are caused by the colors and patterns not the objects.  </p>
 
 <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT2.jpg?raw=true" alt="Second FFT of image"></p>
 
@@ -58,14 +68,20 @@
 <h3>
 <a id="data-collection" class="anchor" href="#data-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Collection:</h3>
 
+<p>I had 15 volunteers examine 94 images. for each image I found the average and standard deviations of the number of disagreements between every pair of volunteers. This is used to compare how much each person agreed with each other. In the graph each point represents the average number of disagreements for one image and the error bars represent the standard deviation.</p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/Human.png?raw=true" alt="Disagreement Between Humans"></p>
+
+<p><em>Disagreement Between Humans</em></p>
+
+<h3>
+<a id="data-compression" class="anchor" href="#data-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Compression:</h3>
+
 <p>I am using a moving window approach to data collection. For each image I randomly choose part of the image. Either the whole image(blue), 1/4th of the image(red), or 1/16th of the image(red) is used. The part of the image used is randomized for each training epoch. </p>
 
 <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/HardCodeArtWindow.jpg?raw=true" alt="Image of program with windows"></p>
 
 <p><em>Data Collection Windows</em></p>
-
-<h3>
-<a id="data-compression" class="anchor" href="#data-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Compression:</h3>
 
 <p>One of the major issues is that the amount of data in an image is huge. The Fourier Transform does not change the amount of data. Though if one takes the absolute value of the Fourier Transform of an image it exhibits rotational symmetry.</p>
 
@@ -73,19 +89,51 @@
 
 <p><em>FFT of image with rotational symmetry</em></p>
 
-<p>I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within thous windows. Each Color is considered by itself so in all this leads to 24 inputs.</p>
+<p>I used this fact and only considered half the FFT. I then considered only eight windows and took the advantage value of the FFT within thous windows. Each Color is considered by itself. I also considered the standard deviations with in each of these windows. In all this leads to 48 inputs.</p>
 
 <p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/FFT3edit.png?raw=true" alt="FFT of image with eight key windows">  </p>
 
 <p><em>FFT of image with eight key windows</em></p>
 
 <h3>
+<a id="results" class="anchor" href="#results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Results:</h3>
+
+<p>To see if the training worked we must first look at an untrained network. This graph is like the one shown above with the results from an untrained network added in red. Each red point represents the average disagreement between the emotions the AI chose and each human. Because the AI is untrained it is basically making random guesses. </p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/Random.png?raw=true" alt="Disagreement Between Humans and Random"></p>
+
+<p><em>Random</em></p>
+
+<p>Two important numbers to note: is the number of points outside the standard deviation and the number of points above the human mean. 88% of the points where above above the human mean, and 52% of the points were outside the standard deviation.</p>
+
+<p>The Next Graph shows the results after the network was trained.</p>
+
+<p><img src="https://github.com/suin3g/HardCodeArt/blob/master/examples/AI.png?raw=true" alt="Disagreement Between Humans and Random"></p>
+
+<h3>
 <a id="using-software" class="anchor" href="#using-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using software:</h3>
 
 <p>After downloading code you must add the images you would like to use to a file named "images" in the project folder. I did not include the images I used because I do not own rights to them.</p>
-      </section>
+        </article>
+      </div>
     </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/suin3g" class="avatar"><img src="https://avatars2.githubusercontent.com/u/10576820?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/suin3g">suin3g</a> maintains <a href="https://github.com/suin3g/HardCodeArt">Hard Code Art</a></p>
 
-    
-  </body>
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/suin3g/HardCodeArt/tarball/master" class="tar">tar</a><a href="https://github.com/suin3g/HardCodeArt/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
 </html>
